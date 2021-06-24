@@ -6,17 +6,17 @@
   <ol>
     <li><a href="#description">Description</a></li>
     <li><a href="#installation">Installation</a></li>
-    <ol>
+    <ul>
       <li><a href="#python">Python</a></li>
       <li><a href="#windows">Windows</a></li>
       <li><a href="#python">Linux</a></li>
       <li><a href="#osx">OSX</a></li>
-    </ol>
+    </ul>
     <li><a href="#usage">Usage</a></li>
-    <ol>
+    <ul>
       <li><a href="#python-library">Python Library</a></li>
       <li><a href="#gui">GUI</a></li>
-    </ol>
+    </ul>
     <li><a href="#references">References</a></li>
   </ol>
 </details>
@@ -224,6 +224,55 @@ Class for assigning FFF square fields to FFF rectangular fields using the equal 
 
 
 ### GUI
+#### Calculator Tab
+Gui for calculating equivalent squares for both definitions equal axis dose and equal TPR<sub>20,10</sub>. For comparison also the output for geometric mean and the Sterling equation is calculated.
+
+##### Input parameters
+* x: x-dimension of the considered rectangular field
+* y: y-dimension of the considered rectangular field
+* depth: depth in water in cm
+* TPR2010: the quality index TPR<sub>20,10</sub> of the used LINAC
+* mode: assignment mode between square and rectangular fields; options: [WFF-WFF,FFF-FFF,FFF,WFF]
+* FFF-profile: Only relevant for modes including FFF-fields; selection of the implemented FFF-profiles, used as weighting function in the calculation; obtained for ELEKTA Versa HD LINACS at a depth of 1cm; options: [6mv,10mv]
+
+
+#### Differences Plots Tab
+In this subprogram the differences between our equivalent square calculation method and the comon geometric mean respectively Sterling equation can be plotted as color map. Optional the plot can also be done using an one colored limed plot. The plots can be saved as png-file.
+
+##### Input parameters
+###### Required
+* Smin: minimal fieldsize in cm
+* Smax: maximal field size in cm
+* increment: increment between the plotted pixel in each direction in cm
+* depth: depth in water in cm
+* TPR2010: the quality index TPR<sub>20,10</sub> of the used LINAC
+* method: selection of the equivalent square definition; options: [Axis dose, TPR2010]
+* mode: assignment mode between square and rectangular fields; options: [WFF-WFF,FFF-FFF,FFF,WFF]
+* FFF-profile: Only relevant for modes including FFF-fields; selection of the implemented FFF-profiles, used as weighting function in the calculation; obtained for ELEKTA Versa HD LINACS at a depth of 1cm; options: [6mv,10mv]
+
+###### Optional
+* representation: 
+  * relative: if true the ploted differences are relative
+  * absolute values: if true the plotted differences are absolute values (positive)
+* color map: selection of color map; all comon `matplotlib`color maps can be typed in
+  * min color: if true the minimal value for the 'minimal' color of the colorbar can be typed in; false the smalest value of the array is choosen
+  * max color: if true the maximal value for the 'maximal' calor of the colorbar can be typed in; false the largest value of the array is choosen
+* Limit Plot:
+  * show: if true a limit plot is shown instead of the normal one; this means all values biger or equal to the limit are shown in red
+  * limit: the limit for the limit plot can be set
+
+#### Create Tables Tab
+A table for equivalent squares can be calculated and shown. Afater the calculation the table can be saved using the excel format.
+
+##### Input parameters
+* Smin: minimal fieldsize in cm
+* Smax: maximal field size in cm
+* increment: increment between the plotted pixel in each direction in cm
+* depth: depth in water in cm
+* TPR2010: the quality index TPR<sub>20,10</sub> of the used LINAC
+* method: selection of the equivalent square definition; options: [Axis dose, TPR2010]
+* mode: assignment mode between square and rectangular fields; options: [WFF-WFF,FFF-FFF,FFF,WFF]
+* FFF-profile: Only relevant for modes including FFF-fields; selection of the implemented FFF-profiles, used as weighting function in the calculation; obtained for ELEKTA Versa HD LINACS at a depth of 1cm; options: [6mv,10mv]
 
 
 ## References
