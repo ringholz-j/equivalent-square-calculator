@@ -130,7 +130,7 @@ def Dz_rect_tpr(dx,dy,z,t):
 	b = bz(z,t)
 	return Dz_rect(A,a,B,b,dx,dy)
 
-
+#newton optimation
 
 def newton_f(d,z,t,k_rect):
 	return Dz_square_tpr(d,z,t)[0] - k_rect
@@ -149,7 +149,6 @@ def sterling(dx,dy):
 	return 4*dx*dy/(2*(dx+dy))
 
 
-#newton optimation
 
 def newton(f,Df,x0,epsilon,max_iter,args):
 	xn = x0
@@ -170,7 +169,7 @@ def newton(f,Df,x0,epsilon,max_iter,args):
 
 #Equivalent Square WFF/WFF
 class EquivalentSquare:
-	def __init__(self,dx,dy,z=10,tpr2010=0.775,epsilon=0.000001,max_iter=100,no_kernel=True):
+	def __init__(self,dx,dy,z=10,tpr2010=0.671,epsilon=0.000001,max_iter=100,no_kernel=True):
 		self.dx = dx
 		self.dy = dy
 		self.z = z
@@ -342,7 +341,7 @@ def newton_df_fff(d,f_d,z,t,k_rect,energy='6mv'):
 
 #Equivalent Square FFF/FFF
 class EquivalentSquareFFF:
-	def __init__(self,dx,dy,z=10,tpr2010=0.775,epsilon=0.000001,max_iter=100,no_kernel=True,energy='6mv'):
+	def __init__(self,dx,dy,z=10,tpr2010=0.671,epsilon=0.000001,max_iter=100,no_kernel=True,energy='6mv'):
 		self.dx = dx
 		self.dy = dy
 		self.z = z
@@ -431,7 +430,7 @@ class EquivalentSquareFFF:
 
 #Equivalent Square FFF/WFF
 class EquivalentSquareFFFWFF:
-	def __init__(self,dx,dy,z=10,tpr2010=0.775,epsilon=0.000001,max_iter=1000,no_kernel=True,energy='6mv'):
+	def __init__(self,dx,dy,z=10,tpr2010=0.671,epsilon=0.000001,max_iter=1000,no_kernel=True,energy='6mv'):
 		self.dx = dx
 		self.dy = dy
 		self.z = z
@@ -562,7 +561,7 @@ def calc_tpr_e(f,dx,dy=0,tpr2010=0.775,energy='6mv'):
 
 #Equivalent Square WFF/WFF: Using same TPR2010 as Equivalent Square definition
 class EquivalentSquareTPR:
-	def __init__(self,dx,dy,z=10,tpr2010=0.775,epsilon=0.000001,max_iter=100,no_kernel=False):
+	def __init__(self,dx,dy,z=10,tpr2010=0.671,epsilon=0.000001,max_iter=100,no_kernel=False):
 		self.dx = dx
 		self.dy = dy
 		self.tpr2010 = tpr2010
@@ -644,7 +643,7 @@ class EquivalentSquareTPR:
 
 #Equivalent Square FFF/FFF: Using same TPR2010 as Equivalent Square definition
 class EquivalentSquareFFFTPR:
-	def __init__(self,dx,dy,z=10,tpr2010=0.775,epsilon=0.000001,max_iter=100,no_kernel=False,energy='6mv'):
+	def __init__(self,dx,dy,z=10,tpr2010=0.671,epsilon=0.000001,max_iter=100,no_kernel=False,energy='6mv'):
 		self.dx = dx
 		self.dy = dy
 		self.tpr2010 = tpr2010
@@ -727,7 +726,7 @@ class EquivalentSquareFFFTPR:
 
 #Equivalent Square FFF/FFF: Using same TPR2010 as Equivalent Square definition
 class EquivalentSquareFFFWFFTPR:
-	def __init__(self,dx,dy,z=10,tpr2010=0.775,epsilon=0.000001,max_iter=100,no_kernel=False,energy='6mv'):
+	def __init__(self,dx,dy,z=10,tpr2010=0.671,epsilon=0.000001,max_iter=100,no_kernel=False,energy='6mv'):
 		self.dx = dx
 		self.dy = dy
 		self.tpr2010 = tpr2010
