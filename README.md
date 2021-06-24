@@ -1,5 +1,27 @@
 # Equivalent Square Calculator
 
+
+<details open="open">
+  <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
+  <ol>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#installation">Installation</a></li>
+    <ol>
+      <li><a href="#python">Python</a></li>
+      <li><a href="#windows">Windows</a></li>
+      <li><a href="#python">Linux</a></li>
+      <li><a href="#osx">OSX</a></li>
+    </ol>
+    <li><a href="#usage">Usage</a></li>
+    <ol>
+      <li><a href="#python-library">Python Library</a></li>
+      <li><a href="#gui">GUI</a></li>
+    </ol>
+    <li><a href="#references">References</a></li>
+  </ol>
+</details>
+
+
 ## Description
 In the field of radiation therapy and dosimetry the correction factor of specific radiation field detectors are in most cases determined for square fields only. So to retrieve these factors also for different formed fields such as rectangular fields, the equivalent square fields for these fields have to be known. Because for rectangular fields the pure geometric relation such as geometric mean and Sterling equation are still in use today, we developed a physical method based on the pencil beam model according to Ahnesjö et al. [[1]](#1) and Nyholm et al. [[2]](#2),[[3]](#3). We implement this method as Python library and GUI.
 We implement both definitions for equivalent square: equal axis dose and equal TPR<sub>20,10</sub>.<br>
@@ -55,6 +77,150 @@ The standalone version of the GUI can be installed unpacking the ZIP-file `exe.m
 
 ### Python library
 The first part of the library contains the functions according to Ahnesjö et al. [[1]](#1) and Nyholm et al. [[2]](#2),[[3]](#3) describing the pencil beam kernel. The following functions (`Pz_tri_part_b` ... `Dz_rect_tpr`) integrating the kernel over the considered rectangular field dimensions and calculating the required axis dose of the fields. The functions `newton_f` ... `newton` define the newton method to find the square field with the best dose agreement to the considered rectangular field.<br><br>
+
+#### class EquivalentSquare:
+Class for assigning WFF square fields to WFF rectangular fields using the equal axis dose definition.
+
+##### Input variables:
+* `dx`: x-dimension of the considered rectangular field in cm (required)
+* `dy`: y-dimension of the considered rectangular field in cm (required)
+* `z:` depth in water in cm; default z=10cm (optional)
+* `tpr2010`: quality index TPR<sub>20,10</sub> of used LINAC; default tpr2010=671 (optional)
+* `epsilon`: maximal deviation in integrated axis dose (cm<sup>2</sup> g<sup>-1</sup>)) between rectangular and square field; default epsilon=0.000001 (optional)
+* `max_iter`: maximal amount of iterations for the newton optimation; default max_iter=100 (optional)
+* `no_kernel`: if false also the integrated kernal dose of the square field is saved.
+
+##### calculated output class variables:
+* `equi_sq`: calculated equivalent square round to 0.01cm
+* `equi_sq_raw`: unround calculated equivalent square
+* `geometric_mean`: Geometric Mean
+* `geo_dif`: difference between equivalent square and geometric mean
+* `geo_dif_rel`: relative difference between equivalent square and geometric mean
+* `sterling`: Output from Sterling equation
+* `sterling_dif`: difference between equivalent square and output from Sterling equation
+* `sterling_dif_rel`: relative difference between equivalent square and output from Sterling equation
+
+
+#### class EquivalentSquareFFF:
+Class for assigning FFF square fields to FFF rectangular fields using the equal axis dose definition.
+
+##### Input variables:
+* `dx`: x-dimension of the considered rectangular field in cm (required)
+* `dy`: y-dimension of the considered rectangular field in cm (required)
+* `z:` depth in water in cm; default z=10cm (optional)
+* `tpr2010`: quality index TPR<sub>20,10</sub> of used LINAC; default tpr2010=671 (optional)
+* `epsilon`: maximal deviation in integrated axis dose (cm<sup>2</sup> g<sup>-1</sup>)) between rectangular and square field; default epsilon=0.000001 (optional)
+* `max_iter`: maximal amount of iterations for the newton optimation; default max_iter=100 (optional)
+* `no_kernel`: if false also the integrated kernal dose of the square field is saved.
+* `energy`: Selection of the implemented FFF-profiles, used as weighting function in the calculation; obtained for ELEKTA Versa HD LINACS at a depth of 1cm; possibilities: ['6mv','10mv']; default energy='6mv' (optional)
+
+##### calculated output class variables:
+* `equi_sq`: calculated equivalent square round to 0.01cm
+* `equi_sq_raw`: unround calculated equivalent square
+* `geometric_mean`: Geometric Mean
+* `geo_dif`: difference between equivalent square and geometric mean
+* `geo_dif_rel`: relative difference between equivalent square and geometric mean
+* `sterling`: Output from Sterling equation
+* `sterling_dif`: difference between equivalent square and output from Sterling equation
+* `sterling_dif_rel`: relative difference between equivalent square and output from Sterling equation
+
+
+#### class EquivalentSquareFFFWFF:
+Class for assigning WFF square fields to FFF rectangular fields using the equal axis dose definition.
+
+##### Input variables:
+* `dx`: x-dimension of the considered rectangular field in cm (required)
+* `dy`: y-dimension of the considered rectangular field in cm (required)
+* `z:` depth in water in cm; default z=10cm (optional)
+* `tpr2010`: quality index TPR<sub>20,10</sub> of used LINAC; default tpr2010=671 (optional)
+* `epsilon`: maximal deviation in integrated axis dose (cm<sup>2</sup> g<sup>-1</sup>)) between rectangular and square field; default epsilon=0.000001 (optional)
+* `max_iter`: maximal amount of iterations for the newton optimation; default max_iter=100 (optional)
+* `no_kernel`: if false also the integrated kernal dose of the square field is saved.
+* `energy`: Selection of the implemented FFF-profiles, used as weighting function in the calculation; obtained for ELEKTA Versa HD LINACS at a depth of 1cm; possibilities: ['6mv','10mv']; default energy='6mv' (optional)
+
+##### calculated output class variables:
+* `equi_sq`: calculated equivalent square round to 0.01cm
+* `equi_sq_raw`: unround calculated equivalent square
+* `geometric_mean`: Geometric Mean
+* `geo_dif`: difference between equivalent square and geometric mean
+* `geo_dif_rel`: relative difference between equivalent square and geometric mean
+* `sterling`: Output from Sterling equation
+* `sterling_dif`: difference between equivalent square and output from Sterling equation
+* `sterling_dif_rel`: relative difference between equivalent square and output from Sterling equation
+
+
+#### class EquivalentSquareTPR:
+Class for assigning WFF square fields to WFF rectangular fields using the equal TPR<sub>20,10</sub> definition.
+
+##### Input variables:
+* `dx`: x-dimension of the considered rectangular field in cm (required)
+* `dy`: y-dimension of the considered rectangular field in cm (required)
+* `tpr2010`: quality index TPR<sub>20,10</sub> of used LINAC; default tpr2010=671 (optional)
+* `epsilon`: maximal deviation in TPR<sub>20,10</sub> between rectangular and square field; default epsilon=0.000001 (optional)
+* `max_iter`: maximal amount of iterations for the newton optimation; default max_iter=100 (optional)
+
+##### calculated output class variables:
+* `equi_sq`: calculated equivalent square round to 0.01cm
+* `equi_sq_raw`: unround calculated equivalent square
+* `geometric_mean`: Geometric Mean
+* `geo_dif`: difference between equivalent square and geometric mean
+* `geo_dif_rel`: relative difference between equivalent square and geometric mean
+* `sterling`: Output from Sterling equation
+* `sterling_dif`: difference between equivalent square and output from Sterling equation
+* `sterling_dif_rel`: relative difference between equivalent square and output from Sterling equation
+* `tpr`: TPR<sub>20,10</sub> of rectangular field
+* `tpr_sq`: TPR<sub>20,10</sub> of the rectangular field
+* `tpr_dif`: TPR<sub>20,10</sub> difference between rectangular and square field 
+
+
+#### class EquivalentSquareFFFTPR:
+Class for assigning FFF square fields to FFF rectangular fields using the equal TPR<sub>20,10</sub> definition.
+
+##### Input variables:
+* `dx`: x-dimension of the considered rectangular field in cm (required)
+* `dy`: y-dimension of the considered rectangular field in cm (required)
+* `tpr2010`: quality index TPR<sub>20,10</sub> of used LINAC; default tpr2010=671 (optional)
+* `epsilon`: maximal deviation in TPR<sub>20,10</sub> between rectangular and square field; default epsilon=0.000001 (optional)
+* `max_iter`: maximal amount of iterations for the newton optimation; default max_iter=100 (optional)
+* `energy`: Selection of the implemented FFF-profiles, used as weighting function in the calculation; obtained for ELEKTA Versa HD LINACS at a depth of 1cm; possibilities: ['6mv','10mv']; default energy='6mv' (optional)
+
+##### calculated output class variables:
+* `equi_sq`: calculated equivalent square round to 0.01cm
+* `equi_sq_raw`: unround calculated equivalent square
+* `geometric_mean`: Geometric Mean
+* `geo_dif`: difference between equivalent square and geometric mean
+* `geo_dif_rel`: relative difference between equivalent square and geometric mean
+* `sterling`: Output from Sterling equation
+* `sterling_dif`: difference between equivalent square and output from Sterling equation
+* `sterling_dif_rel`: relative difference between equivalent square and output from Sterling equation
+* `tpr`: TPR<sub>20,10</sub> of rectangular field
+* `tpr_sq`: TPR<sub>20,10</sub> of the rectangular field
+* `tpr_dif`: TPR<sub>20,10</sub> difference between rectangular and square field
+
+
+#### class EquivalentSquareFFFWFFTPR:
+Class for assigning FFF square fields to FFF rectangular fields using the equal TPR<sub>20,10</sub> definition.
+
+##### Input variables:
+* `dx`: x-dimension of the considered rectangular field in cm (required)
+* `dy`: y-dimension of the considered rectangular field in cm (required)
+* `tpr2010`: quality index TPR<sub>20,10</sub> of used LINAC; default tpr2010=671 (optional)
+* `epsilon`: maximal deviation in TPR<sub>20,10</sub> between rectangular and square field; default epsilon=0.000001 (optional)
+* `max_iter`: maximal amount of iterations for the newton optimation; default max_iter=100 (optional)
+* `energy`: Selection of the implemented FFF-profiles, used as weighting function in the calculation; obtained for ELEKTA Versa HD LINACS at a depth of 1cm; possibilities: ['6mv','10mv']; default energy='6mv' (optional)
+
+##### calculated output class variables:
+* `equi_sq`: calculated equivalent square round to 0.01cm
+* `equi_sq_raw`: unround calculated equivalent square
+* `geometric_mean`: Geometric Mean
+* `geo_dif`: difference between equivalent square and geometric mean
+* `geo_dif_rel`: relative difference between equivalent square and geometric mean
+* `sterling`: Output from Sterling equation
+* `sterling_dif`: difference between equivalent square and output from Sterling equation
+* `sterling_dif_rel`: relative difference between equivalent square and output from Sterling equation
+* `tpr`: TPR<sub>20,10</sub> of rectangular field
+* `tpr_sq`: TPR<sub>20,10</sub> of the rectangular field
+* `tpr_dif`: TPR<sub>20,10</sub> difference between rectangular and square field 
 
 
 ### GUI
