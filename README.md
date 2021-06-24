@@ -45,7 +45,7 @@ The file `equivalent_square_lib.py` includes the library and `equivalent_square_
 
 
 ### Windows
-The standalone version of the GUI can be installed using the installation file `EquivalentSquareCalculator-1.0.0-amd64.msi`.
+The standalone version of the GUI can be installed downloading the newiest installation file <a href='./install/windows/EquivalentSquareCalculator-1.0.0-amd64.msi'>`EquivalentSquareCalculator-1.0.0-amd64.msi`</a>.
 #### Requirements
 * Tested for Windows 10
 * disc space: 300MB
