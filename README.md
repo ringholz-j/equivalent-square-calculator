@@ -67,7 +67,7 @@ you find the EquivalentSquareCalculator in your launchpad.
 * disc space: 270MB
 
 ### OSX
-The standalone version of the GUI can be installed unpacking the ZIP-file <a href='https://github.com/ringholz-j/equivalent-square-calculator/raw/main/install/osx/EquivalentSquareCalculator.zip'>`EquivalentSquareCalculator.zip`</a> and move file `EquivalentSquareCalculator.app`to your application folder. Now the Equivalent Square Calculator should appear in your launchpad.
+The standalone version of the GUI can be installed downloading and unpacking the ZIP-file <a href='https://github.com/ringholz-j/equivalent-square-calculator/raw/main/install/osx/EquivalentSquareCalculator.zip'>`EquivalentSquareCalculator.zip`</a> and move the file `EquivalentSquareCalculator.app`to your application folder. Now the Equivalent Square Calculator should appear in your launchpad.
 
 #### Requirements
 * Tested for: OSX 10.15.7 Catalina
