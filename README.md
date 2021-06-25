@@ -45,12 +45,12 @@ The file `equivalent_square_lib.py` includes the library and `equivalent_square_
 
 
 ### Windows
-The standalone version of the GUI can be installed using the installation file `EquivalentSquareCalculator-1.0.0-amd64.msi`.
+The standalone version of the GUI can be installed downloading the newiest installation file <a href='https://github.com/ringholz-j/equivalent-square-calculator/raw/main/install/windows/EquivalentSquareCalculator-1.0.0-amd64.msi'>`EquivalentSquareCalculator-1.0.0-amd64.msi`</a>.
 #### Requirements
 * Tested for Windows 10
 * disc space: 300MB
 ### Linux
-The standalone version of the GUI can be installed unpacking the ZIP-file `exe.linux-x86_64-3.6.zip` in your desired location. After that open the file `EquivalentSquareCalculator.desktop` with an arbitrary text editor and and insert in the following row the path of the `EquivalentSquareCalculator` file
+The standalone version of the GUI can be installed downloading and unpacking the newest release ZIP-file <a href='https://github.com/ringholz-j/equivalent-square-calculator/raw/main/install/linux/exe.linux-x86_64-3.6.zip'>`exe.linux-x86_64-3.6.zip`</a> in your desired location. After that open the file `EquivalentSquareCalculator.desktop` with an arbitrary text editor and and insert in the following row the path of the `EquivalentSquareCalculator` file
 
   ```sh
   Exec=/YOURPATH/EquivalentSquareCalculator
