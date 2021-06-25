@@ -36,8 +36,10 @@ The file `equivalent_square_lib.py` includes the library and `equivalent_square_
 
 #### Required Python packages
 * `decimal`
+* `jinja2`
 * `matplotlib`
 * `numpy`
+* `openpyxl`
 * `pandas`
 * `pandastable`
 * `scipy`
