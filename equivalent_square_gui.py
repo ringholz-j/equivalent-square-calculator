@@ -9,6 +9,7 @@ from tkinter import IntVar as tk_IntVar
 from tkinter import Radiobutton as tk_Radiobutton
 from tkinter import Checkbutton as tk_Checkbutton
 from tkinter.filedialog import asksaveasfile
+from tkinter.filedialog import askopenfilename
 
 import tkinter as tk
 
@@ -21,6 +22,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib import colors
 import matplotlib.backends.backend_tkagg as tkagg
+import matplotlib.patches as patches
 
 import numpy as np
 
@@ -34,6 +36,8 @@ diff_plot_geo = None
 
 diff_plot_ster_bar = None
 diff_plot_geo_bar = None
+
+mlc_plot = None
 
 table_data = None
 pt = None
@@ -348,6 +352,18 @@ class Plotwindow():
 
 		return pre_calc_a
 
+	def draw_mlc(self,field):
+		self.axes.set_xlim(-200,200)
+		self.axes.set_ylim(-200,200)
+		for leaf in field:
+			rect_l = patches.Rectangle((-200,leaf['y']*10), 200+leaf['xl']*10,leaf['dy']*10, linewidth=1, edgecolor='black', facecolor='blue')
+			rect_r = patches.Rectangle((leaf['xr']*10,leaf['y']*10), 200-leaf['xr']*10,leaf['dy']*10, linewidth=1, edgecolor='black', facecolor='blue')
+			self.axes.add_patch(rect_l)
+			self.axes.add_patch(rect_r)
+
+		self.axes.set_aspect('equal', adjustable='box')
+		self.canvas.draw()
+
 
 
 #Funktion to calculate Equivalent Square and write equi, geo and sterling to window
@@ -387,6 +403,47 @@ def calculate(event=0):
 
 	geo_str = str(eq_square.geometric_mean) + ' cm'
 	geo_output.configure(text=geo_str,font='Verdana 9 bold',fg='orange')
+
+
+def calculate_i(event=0):
+	# plot_size = (100,100)
+	path_entry = entry_path.get()
+	tpr_entry_i = entry_tpr_i.get()
+	modus_entry_i = entry_modus_i.get()
+	profile_entry_i = entry_profile_i.get()
+	select_beam_entry = entry_select_beam.get()
+	#method_entry = entry_method.get()
+
+	tpr_entry_i = float(tpr_entry_i.replace(',','.'))
+
+	if modus_entry_i == 'WFF-WFF':
+		eq_square = eq.EquivalentSquareIrr(path_entry,tpr2010=tpr_entry_i,beam=select_beam_entry)
+		eq_square_tpr = eq.EquivalentSquareTPRIrr(path_entry,tpr2010=tpr_entry_i,beam=select_beam_entry)
+	elif modus_entry_i == 'FFF-FFF':
+		eq_square = eq.EquivalentSquareFFFIrr(path_entry,tpr2010=tpr_entry_i,energy=profile_entry_i,beam=select_beam_entry)
+		eq_square_tpr = eq.EquivalentSquareFFFTPRIrr(path_entry,tpr2010=tpr_entry_i,energy=profile_entry_i,beam=select_beam_entry)
+	else:
+		eq_square = eq.EquivalentSquareFFFWFFIrr(path_entry,tpr2010=tpr_entry_i,energy=profile_entry_i,beam=select_beam_entry)
+		eq_square_tpr = eq.EquivalentSquareFFFWFFTPRIrr(path_entry,tpr2010=tpr_entry_i,energy=profile_entry_i,beam=select_beam_entry)
+
+	# global mlc_plot
+	# if mlc_plot != None:
+	# 	mlc_plot.canvas.get_tk_widget().pack_forget()
+	# mlc_plot = Plotwindow(frame_mlc_plot,plot_size)
+	# mlc_plot.draw_mlc(eq_square.field)
+
+	equi_str = str(eq_square.equi_sq) + ' cm'
+	equi_output_i.configure(text=equi_str,font='Verdana 10 bold',fg='green')
+
+	equi_tpr_str = str(eq_square_tpr.equi_sq) + ' cm'
+	equi_tpr_output_i.configure(text=equi_tpr_str,font='Verdana 10 bold',fg='green')
+
+	sterling_str = str(eq_square.sterling) + ' cm'
+	sterling_output_i.configure(text=sterling_str,font='Verdana 9 bold',fg='orange')
+
+	geo_str = str(eq_square.geometric_mean) + ' cm'
+	geo_output_i.configure(text=geo_str,font='Verdana 9 bold',fg='orange')
+
 
 def show_diff(event=0):
 	plot_size = (120,120)
@@ -452,12 +509,23 @@ def check_tab(event):
 	if parent_tab.index(parent_tab.select()) == 0:
 		frame_differences.pack_forget()
 		frame_tables.pack_forget()
+		frame_master_i.pack_forget()
+		frame_mlc_plot.pack_forget()
 	elif parent_tab.index(parent_tab.select()) == 1:
 		frame_tables.pack_forget()
+		frame_master_i.pack_forget()
+		frame_mlc_plot.pack_forget()
 		frame_differences.pack(side='top', padx='20', pady='5')
-	else:
+	elif parent_tab.index(parent_tab.select()) == 2:
 		frame_differences.pack_forget()
+		frame_master_i.pack_forget()
+		frame_mlc_plot.pack_forget()
 		frame_tables.pack(side='top', padx='20', pady='5')
+	else:
+		frame_tables.pack_forget()
+		frame_differences.pack_forget()
+		frame_master_i.pack(side='left', padx='20', pady='5')
+		frame_mlc_plot.pack(side='left')
 
 def save_excel():
 	if table_data != None:
@@ -600,6 +668,50 @@ def show_table(event=0):
 		model = TableModel(dataframe=df)
 
 		pt.updateModel(model)
+
+def select_dicom():
+	filetypes = (('DICOM', '*.dcm'),('All files','*.*'))
+	filename = askopenfilename(title = 'Open DICOM file', initialdir = './', filetypes=filetypes)
+	#print(filename)
+	dicom_path.set(filename)
+
+	fields = es.read_mlc(filename)
+	keys = list(fields.keys())
+
+	key_selected = keys[0]
+
+
+	entry_select_beam.config(values=keys)
+
+	entry_select_beam.set(key_selected)
+
+
+	field = fields[key_selected][0]
+
+	plot_size = (100,100)
+	global mlc_plot
+	if mlc_plot != None:
+		mlc_plot.canvas.get_tk_widget().pack_forget()
+	mlc_plot = Plotwindow(frame_mlc_plot,plot_size)
+	mlc_plot.draw_mlc(field)
+
+def update_mlc_plot(event=0):
+	filename = entry_path.get()
+
+
+	fields = es.read_mlc(filename)
+
+	key_selected = entry_select_beam.get()
+
+	field = fields[key_selected][0]
+
+	plot_size = (100,100)
+	global mlc_plot
+	if mlc_plot != None:
+		mlc_plot.canvas.get_tk_widget().pack_forget()
+	mlc_plot = Plotwindow(frame_mlc_plot,plot_size)
+	mlc_plot.draw_mlc(field)
+
 	
 
 
@@ -615,15 +727,19 @@ parent_tab = ttk.Notebook(root)
 #add tabs
 tab_calculator = tk.Frame(parent_tab)
 
+tab_irreg = tk.Frame(parent_tab)
+
 tab_differences = tk.Frame(parent_tab)
 
 tab_tables = tk.Frame(parent_tab)
+
 
 parent_tab.bind("<<NotebookTabChanged>>", check_tab)
 
 parent_tab.add(tab_calculator,text='Calculator')
 parent_tab.add(tab_differences,text='Differences Plots')
 parent_tab.add(tab_tables,text='Create Tables')
+parent_tab.add(tab_irreg,text='Irregular Fields')
 
 
 parent_tab.pack(expand=1,fill='both')
@@ -777,6 +893,186 @@ geo_output.grid(row=1,column=3)
 #add calculation button to start calculation of equivalent square
 calc_button = tk_Button(frame_master, text="Calculate", fg="black",command=calculate,font='Verdana 10 bold')
 calc_button.pack(side='top',pady=10)
+
+
+
+
+
+### TAB: IRREGULAR FIELDS ###
+
+#add and pack master frame
+# frame_irreg = tk_Frame(master=tab_irreg)
+# frame_irreg.pack(side='top')
+frame_master_i = tk_Frame(master=tab_irreg)
+frame_master_i.pack(side='left', padx='20', pady='5')
+#frame_master_i.pack(side='left', padx='20', pady='5',fill='both')
+
+
+#add header and text to masterframe
+header1_i = tk_Label(frame_master_i,text = 'Usage:',font = "Verdana 12 bold",anchor='w')
+header1_i.pack(side='top',fill='both')
+text1_i = tk_Label(frame_master_i,text = 'Input of x and y dimensions of a rectangular field in cm, the depth in cm and the quality factor TPR2010.', font = 'Verdana 9',anchor='w')
+text1_i.pack(side='top',fill='both')
+text2_i = tk_Label(frame_master_i,text = 'As mode equivalent square calculation between WFF and WFF, FFF and FFF, FFF and WFF can be selected.', font = 'Verdana 9',anchor='w')
+text2_i.pack(side='top',fill='both')
+
+
+##INPUT##
+
+#add and pack frame_input_i to master frame: using for x, y, z and tpr2010 inputs
+frame_input_i = tk_Frame(master=frame_master_i)
+frame_input_i.pack(side='top',fill='both',pady=10)
+
+
+#path input
+label_path = tk_Label(frame_input_i, text='DICOM-path:',anchor='w',font='Verdana 10 bold')
+label_path.grid(row=0, column=0,padx=10)
+
+dicom_path = tk_StringVar(root, value='')
+
+entry_path = tk_Entry(frame_input_i, textvariable=dicom_path)
+entry_path.bind("<Return>",calculate_i)
+entry_path.grid(row=0, column=1)
+
+button_path = ttk.Button(frame_input_i,text='browse',command=select_dicom)
+button_path.grid(row=0, column=2)
+
+
+#Beam input
+label_select_beam = tk_Label(frame_input_i, text='Beam:',anchor='w',font='Verdana 10 bold')
+label_select_beam.grid(row=0, column=3,padx=10)
+
+default_select_beam = tk_StringVar(root, value='')
+
+entry_select_beam = ttk.Combobox(frame_input_i,values=[],textvariable=default_select_beam)
+entry_select_beam.bind("<Return>",calculate_i)
+entry_select_beam.bind('<<ComboboxSelected>>', update_mlc_plot)
+entry_select_beam.grid(row=0, column=4)
+
+# unit_x = tk_Label(frame_input_i, text='cm',anchor='w',font='Verdana 10')
+# unit_x.grid(row=0, column=2)
+
+
+# #y input
+# label_y = tk_Label(frame_input_i, text='y:',anchor='w',font='Verdana 10 bold')
+# label_y.grid(row=0, column=3,padx=10)
+
+# entry_y = tk_Entry(frame_input_i)
+# entry_y.bind("<Return>",calculate)
+# entry_y.grid(row=0, column=4)
+
+# unit_y = tk_Label(frame_input_i, text='cm',anchor='w',font='Verdana 10')
+# unit_y.grid(row=0, column=5)
+
+
+# #z input
+# label_z = tk_Label(frame_input_i, text='depth:',anchor='w',font='Verdana 10 bold')
+# label_z.grid(row=1, column=0,pady=5,padx=10)
+
+# default_z = tk_StringVar(root, value='10')
+
+# entry_z = tk_Entry(frame_input_i,textvariable=default_z)
+# entry_z.bind("<Return>",calculate)
+# entry_z.grid(row=1, column=1)
+
+# unit_z = tk_Label(frame_input_i, text='cm',anchor='w',font='Verdana 10')
+# unit_z.grid(row=1, column=2)
+
+
+#tpr2010 input
+label_tpr_i = tk_Label(frame_input_i, text='TPR2010:',anchor='w',font='Verdana 10 bold')
+label_tpr_i.grid(row=1, column=0,padx=10)
+
+default_tpr_i = tk_StringVar(root, value='0.671')
+
+entry_tpr_i = tk_Entry(frame_input_i,textvariable=default_tpr)
+entry_tpr_i.bind("<Return>",calculate_i)
+entry_tpr_i.grid(row=1, column=1)
+
+
+#Mode input
+label_modus_i = tk_Label(frame_input_i, text='mode:',anchor='w',font='Verdana 10 bold')
+label_modus_i.grid(row=1, column=3,padx=10)
+
+default_modus_i = tk_StringVar(root, value='WFF-WFF')
+
+entry_modus_i = ttk.Combobox(frame_input_i,values=['WFF-WFF','FFF-FFF','FFF-WFF'],textvariable=default_modus_i)
+entry_modus_i.bind("<Return>",calculate_i)
+entry_modus_i.grid(row=1, column=4)
+
+#FFF Profile input
+label_profile_i = tk_Label(frame_input_i, text='FFF profile*:',anchor='w',font='Verdana 10 bold')
+label_profile_i.grid(row=2, column=0,padx=10)
+
+default_profile_i = tk_StringVar(root, value='6mv')
+
+entry_profile_i = ttk.Combobox(frame_input_i,values=['6mv','10mv'],textvariable=default_profile_i)
+entry_profile_i.bind("<Return>",calculate_i)
+entry_profile_i.grid(row=2, column=1)
+
+frame_note_i = tk_Frame(master=frame_master_i)
+frame_note_i.pack(side='top',fill='both',pady=10)
+
+note_1_i = tk_Label(frame_note_i,text='*Only relevant for modes including FFF-fields.',anchor='w',font='Verdana 9')
+note_1_i.pack(side='top',fill='both')
+note_2_i = tk_Label(frame_note_i,text='Selection of the implemented FFF-profiles, used as weighting function in the calculation.',anchor='w',font='Verdana 9')
+note_2_i.pack(side='top',fill='both')
+note_3_i = tk_Label(frame_note_i,text='Obtained for ELEKTA Versa HD LINACS at a depth of 1cm.',anchor='w',font='Verdana 9')
+note_3_i.pack(side='top',fill='both')
+
+
+##OUTPUT##
+
+#title for equivalent square output
+equi_title_i = tk_Label(frame_master_i,text='Equivalent Square:',anchor='w',font='Verdana 12 bold')
+equi_title_i.pack(side='top',fill='both',pady=10)
+
+#add and pack frame frame_equi in master frame: using for output equi, geo and sterling
+frame_equi_i = tk_Frame(master = frame_master_i)
+frame_equi_i.pack(side='top',fill='both',pady=0)
+
+
+#equi output
+equi_label_i = tk_Label(frame_equi_i,text='Equal axis dose definition:',anchor='w',font='Verdana 10 bold')
+equi_label_i.grid(row=0,column=0,padx=10,sticky='w')
+
+equi_output_i = tk_Label(frame_equi_i,anchor='w',font='Verdana 10 bold')
+equi_output_i.grid(row=0,column=1)
+
+#equi TPR2010 output
+equi_tpr_label_i = tk_Label(frame_equi_i,text='Equal TPR2010 definition:',anchor='w',font='Verdana 10 bold')
+equi_tpr_label_i.grid(row=0,column=2,padx=10,sticky='w')
+
+equi_tpr_output_i = tk_Label(frame_equi_i,anchor='w',font='Verdana 10 bold')
+equi_tpr_output_i.grid(row=0,column=3)
+
+
+
+#sterling output
+sterling_label_i = tk_Label(frame_equi_i,text='Sterling equation:',anchor='w',font='Verdana 9 bold')
+sterling_label_i.grid(row=1,column=0,padx=10,sticky='w',pady=5)
+
+sterling_output_i = tk_Label(frame_equi_i,anchor='w',font='Verdana 9 bold')
+sterling_output_i.grid(row=1,column=1)
+
+
+#geo output
+geo_label_i = tk_Label(frame_equi_i,text='Geometric mean:',anchor='w',font='Verdana 9 bold')
+geo_label_i.grid(row=1,column=2,padx=10,sticky='w')
+
+geo_output_i = tk_Label(frame_equi_i,anchor='w',font='Verdana 9 bold')
+geo_output_i.grid(row=1,column=3)
+
+
+#add calculation button to start calculation of equivalent square
+calc_button_i = tk_Button(frame_master_i, text="Calculate", fg="black",command=calculate_i,font='Verdana 10 bold')
+calc_button_i.pack(side='top',pady=10)
+
+frame_mlc_plot = tk_Frame(master=tab_irreg)
+frame_mlc_plot.pack(side='left')
+
+
+
 
 ### TAB: DIFFERENCES ###
 
