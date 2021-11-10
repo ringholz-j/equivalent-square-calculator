@@ -276,6 +276,17 @@ A table for equivalent squares can be calculated and shown. Afater the calculati
 * mode: assignment mode between square and rectangular fields; options: [WFF-WFF,FFF-FFF,FFF,WFF]
 * FFF-profile: Only relevant for modes including FFF-fields; selection of the implemented FFF-profiles, used as weighting function in the calculation; obtained for ELEKTA Versa HD LINACS at a depth of 1cm; options: [6mv,10mv]
 
+#### Irregular Fields Tab
+Gui for calculating equivalent squares for irregular fields for both definitions equal axis dose and equal TPR<sub>20,10</sub>. For comparison also the output for geometric mean and the Sterling equation equivalents for irregular fields are calculated. The DICOM format is used to readin treatment-plans from the common treatment-planning systems. The resulting MLC-configuration is shown schematically. The depth in tissue/water is read from the DICOM-file.
+
+##### Input parameters
+* DICOM-path: textbox/file-browser to select the DICOM file
+* Beam: Selection of the field to calculate the equivalent square
+* TPR2010: the quality index TPR<sub>20,10</sub> of the used LINAC
+* mode: assignment mode between square and rectangular fields; options: [WFF-WFF,FFF-FFF,FFF,WFF]
+* FFF-profile: Only relevant for modes including FFF-fields; selection of the implemented FFF-profiles, used as weighting function in the calculation; obtained for ELEKTA Versa HD LINACS at a depth of 1cm; options: [6mv,10mv]
+* Starting value: The value to start in the Newton iteration process to calculate the equivalent square of the field. With options for Sterling equation and the geometric mean equivalents for irregular fields.
+
 
 ## References
 <a id="1">[1]</a> 
